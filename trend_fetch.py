@@ -1,13 +1,27 @@
-import feedparser
+name: Google Trends Game Fetcher
 
-RSS_URL = "https://trends.google.com/trends/trendingsearches/daily/rss?geo=US"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"   # 6 saatte bir (istersen değiştiririz)
 
-feed = feedparser.parse(RSS_URL)
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
 
-trends = []
-for entry in feed.entries:
-    trends.append(entry.title)
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-print("=== Google Trends RSS ===")
-for t in trends[:20]:
-    print("-", t)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run trend fetcher
+        run: python trend_fetch.py
