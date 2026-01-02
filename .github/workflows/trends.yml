@@ -1,0 +1,35 @@
+name: Google Trends Game Fetcher
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # her gün 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repo checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch trends
+        run: python trend_fetch.py
+
+      - name: Upload trends.json to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: 65002
+          key: ${{ secrets.SSH_KEY }}
+          source: "trends.json"
+          target: "public_html/content/plugins/googletrends/"
