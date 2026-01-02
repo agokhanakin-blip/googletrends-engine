@@ -1,6 +1,17 @@
 {
   "date": "2026-01-02",
-  "source": "google_trends_rss",
-  "count": 0,
-  "items": []
+  "source": "reddit_bing",
+  "count": 10,
+  "items": [
+    "arc raiders was steam's best-selling game over the holiday period",
+    "best of indie games 2024: what were some of your favorite indie games?",
+    "do the aaa games for iphones 15 pro and later ever go on sale?",
+    "making friends monday! share your game tags here!",
+    "soul knight developers will add a ball x pit clone to their game",
+    "tech support and basic questions thread - december 31, 2025",
+    "weekly /r/iosgaming discussion: what have you been playing lately and what do you recommend?",
+    "weekly game deals post - death road to canada, wayward souls, dawncaster: deckbuilding rpg, 9th dawn remake, 9th dawn iii, brotato:premium, 60 seconds! reatomized, black border 2, some digital gamebooks and more at discounted prices.",
+    "weekly game suggestions thread - january 02, 2026",
+    "working on a 2 player coop game where each player controls their own hamster wheel."
+  ]
 }
