@@ -5,11 +5,20 @@ from datetime import datetime
 
 print("=== Trend Engine Started ===")
 
+BLOCK_WORDS = [
+    "weekly", "thread", "discussion", "support",
+    "deals", "monday", "post", "share your",
+    "what have you been playing"
+]
+
+KEYWORDS = [
+    "game", "games", "io", "puzzle",
+    "racing", "multiplayer", "browser", "indie"
+]
+
 trends = []
 
-# =========================
-# REDDIT RSS (OYUN KAYNAĞI)
-# =========================
+# Reddit RSS
 REDDIT_RSS = [
     "https://www.reddit.com/r/gaming/.rss",
     "https://www.reddit.com/r/pcgaming/.rss",
@@ -20,46 +29,36 @@ REDDIT_RSS = [
 
 for url in REDDIT_RSS:
     feed = feedparser.parse(url)
-    if feed.entries:
-        print(f"✔ Reddit RSS OK: {url}")
-        for entry in feed.entries[:5]:
-            title = entry.title.lower()
-            if "game" in title or "games" in title or "io" in title:
-                trends.append(title)
-    else:
-        print(f"✖ Reddit RSS EMPTY: {url}")
+    for entry in feed.entries[:10]:
+        title = entry.title.lower()
 
-# =========================
-# BING TRENDS (JSON)
-# =========================
+        if any(b in title for b in BLOCK_WORDS):
+            continue
+
+        if any(k in title for k in KEYWORDS):
+            trends.append(title)
+
+# Bing Trends
 try:
     bing_url = "https://trends.bing.com/trending/api/v1/trendingSearches?cc=us"
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
-    r = requests.get(bing_url, headers=headers, timeout=10)
-    data = r.json()
+    headers = {"User-Agent": "Mozilla/5.0"}
+    data = requests.get(bing_url, headers=headers, timeout=10).json()
 
-    for item in data.get("value", [])[:10]:
-        query = item.get("query", "").lower()
-        if "game" in query or "games" in query:
-            trends.append(query)
-
-    print("✔ Bing Trends OK")
+    for item in data.get("value", [])[:15]:
+        q = item.get("query", "").lower()
+        if any(k in q for k in KEYWORDS):
+            trends.append(q)
 
 except Exception as e:
-    print("✖ Bing Trends ERROR:", e)
+    print("Bing error:", e)
 
-# =========================
-# TEMİZLE + UNIQUE
-# =========================
-clean = sorted(list(set(trends)))
+clean = sorted(set(trends))
 
 output = {
     "date": datetime.utcnow().strftime("%Y-%m-%d"),
-    "source": "reddit_bing",
+    "source": "reddit_bing_filtered",
     "count": len(clean),
-    "items": clean[:30]
+    "items": clean[:25]
 }
 
 with open("trends.json", "w", encoding="utf-8") as f:
