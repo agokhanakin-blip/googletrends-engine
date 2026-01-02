@@ -1,5 +1,6 @@
 {
   "date": "2026-01-02",
-  "source": "google_trends_us",
+  "source": "google_trends_rss",
+  "count": 0,
   "items": []
 }
