@@ -1,22 +1,22 @@
 name: Google Trends Game Fetcher
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:      # Manuel çalıştırma
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 */6 * * *" # 6 saatte bir (istersen günde 1 yaparız)
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -25,3 +25,11 @@ jobs:
 
       - name: Run trend fetcher
         run: python trend_fetch.py
+
+      - name: Commit trends.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add trends.json
+          git commit -m "Update trends.json" || echo "No changes"
+          git push
