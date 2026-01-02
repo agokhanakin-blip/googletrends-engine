@@ -1,27 +1,14 @@
-name: Google Trends Game Fetcher
+import feedparser
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 */6 * * *"   # 6 saatte bir (istersen değiştiririz)
+print("=== Google Trends Engine Started ===")
 
-jobs:
-  fetch:
-    runs-on: ubuntu-latest
+rss_url = "https://trends.google.com/trends/trendingsearches/daily/rss?geo=US"
+feed = feedparser.parse(rss_url)
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+if not feed.entries:
+    print("FETCH ERROR: RSS empty")
+else:
+    for entry in feed.entries[:10]:
+        print(f"PASSED: {entry.title}")
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run trend fetcher
-        run: python trend_fetch.py
+print("=== Google Trends Engine Finished ===")
